@@ -1,0 +1,16 @@
+FloatLayout:
+    Background:
+        id: background
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                source: "sky.png"
+            Rectangle:
+                size: self.width, 138
+                pos: self.pos[0], self.pos[1] + self.height - 138
+                texture: self.cloud_texture
+            Rectangle:
+                size: self.width, 96
+                pos: self.pos[0], self.pos[1]
+                texture: self.floor_texture
