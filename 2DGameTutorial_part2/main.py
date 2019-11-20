@@ -5,6 +5,7 @@ from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.clock import Clock
 
+from pipe import Pipe
 
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
