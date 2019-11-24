@@ -1,0 +1,38 @@
+#:include pipe.kv
+
+FloatLayout:
+    Background:
+        id: background
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                source: "sky.png"
+            Rectangle:
+                size: self.width, 138
+                pos: self.pos[0], self.pos[1] + self.height - 138
+                texture: self.cloud_texture
+            Rectangle:
+                size: self.width, 96
+                pos: self.pos[0], self.pos[1]
+                texture: self.floor_texture
+    Pipe:
+        size_hint: None, None
+        size: 64, root.height - 96
+        pos: 100, 96
+        pipe_center: 250
+    Pipe:
+        size_hint: None, None
+        size: 64, root.height - 96
+        pos: 450, 96
+        pipe_center: 350
+    Pipe:
+        size_hint: None, None
+        size: 64, root.height - 96
+        pos: 800, 96
+        pipe_center: 450
+    Pipe:
+        size_hint: None, None
+        size: 64, root.height - 96
+        pos: 1150, 96
+        pipe_center: 350
