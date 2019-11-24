@@ -16,23 +16,8 @@ FloatLayout:
                 size: self.width, 96
                 pos: self.pos[0], self.pos[1]
                 texture: self.floor_texture
-    Pipe:
+    Button:
+        text: "Start game"
         size_hint: None, None
-        size: 64, root.height - 96
-        pos: 100, 96
-        pipe_center: 250
-    Pipe:
-        size_hint: None, None
-        size: 64, root.height - 96
-        pos: 450, 96
-        pipe_center: 350
-    Pipe:
-        size_hint: None, None
-        size: 64, root.height - 96
-        pos: 800, 96
-        pipe_center: 450
-    Pipe:
-        size_hint: None, None
-        size: 64, root.height - 96
-        pos: 1150, 96
-        pipe_center: 350
+        on_release:
+            app.start_game()

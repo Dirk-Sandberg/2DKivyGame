@@ -39,11 +39,53 @@ class Background(Widget):
         texture = self.property('floor_texture')
         texture.dispatch(self)
 
+from random import randint
 
 class MainApp(App):
+    pipes = []
+
     def on_start(self):
         Clock.schedule_interval(self.root.ids.background.scroll_textures, 1/60.)
-    pass
+
+    def start_game(self):
+        # Create the pipes
+        num_pipes = 5
+        distance_between_pipes = Window.width / (num_pipes - 1)
+        for i in range(num_pipes):
+            pipe = Pipe()
+            pipe.pipe_center = randint(96 + 100, self.root.height - 100)
+            pipe.size_hint = (None, None)
+            pipe.pos = (i*distance_between_pipes, 96)
+            pipe.size = (64, self.root.height - 96)
+
+            self.pipes.append(pipe)
+            self.root.add_widget(pipe)
+
+        # Move the pipes
+        Clock.schedule_interval(self.move_pipes, 1/60.)
+
+    def move_pipes(self, time_passed):
+        # Move pipes
+        for pipe in self.pipes:
+            pipe.x -= time_passed * 100
+
+        # Check if we need to reposition the pipe at the right side
+        num_pipes = 5
+        distance_between_pipes = Window.width / (num_pipes - 1)
+        pipe_xs = list(map(lambda pipe: pipe.x, self.pipes))
+        right_most_x = max(pipe_xs)
+        if right_most_x <= Window.width - distance_between_pipes:
+            most_left_pipe = self.pipes[pipe_xs.index(min(pipe_xs))]
+            most_left_pipe.x = Window.width
+
+
+
+
+
+
+
+
+
 
 
 MainApp().run()

@@ -1,6 +1,7 @@
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, ObjectProperty, ListProperty
 from kivy.uix.image import Image
+from kivy.clock import Clock
 
 class Pipe(Widget):
     # Numeric attributes
@@ -32,6 +33,10 @@ class Pipe(Widget):
 
         self.top_pipe_tex_coords[5] = top_body_size/20.
         self.top_pipe_tex_coords[7] = top_body_size/20.
+
+    def on_pipe_center(self, *args):
+        Clock.schedule_once(self.on_size, 0)
+
 
 
 
