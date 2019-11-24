@@ -40,14 +40,37 @@ class Background(Widget):
         texture.dispatch(self)
 
 from random import randint
+from kivy.properties import NumericProperty
+
+class Bird(Image):
+    velocity = NumericProperty(0)
+
+    def on_touch_down(self, touch):
+        self.source = "bird2.png"
+        self.velocity = 150
+        super().on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        self.source = "bird1.png"
+        super().on_touch_up(touch)
+
+
 
 class MainApp(App):
     pipes = []
+    GRAVITY = 300
 
     def on_start(self):
         Clock.schedule_interval(self.root.ids.background.scroll_textures, 1/60.)
 
+    def move_bird(self, time_passed):
+        bird = self.root.ids.bird
+        bird.y = bird.y + bird.velocity * time_passed
+        bird.velocity = bird.velocity - self.GRAVITY * time_passed
+
     def start_game(self):
+        Clock.schedule_interval(self.move_bird, 1/60.)
+
         # Create the pipes
         num_pipes = 5
         distance_between_pipes = Window.width / (num_pipes - 1)
@@ -55,7 +78,7 @@ class MainApp(App):
             pipe = Pipe()
             pipe.pipe_center = randint(96 + 100, self.root.height - 100)
             pipe.size_hint = (None, None)
-            pipe.pos = (i*distance_between_pipes, 96)
+            pipe.pos = (Window.width + i*distance_between_pipes, 96)
             pipe.size = (64, self.root.height - 96)
 
             self.pipes.append(pipe)
