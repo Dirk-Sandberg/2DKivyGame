@@ -59,17 +59,58 @@ class Bird(Image):
 class MainApp(App):
     pipes = []
     GRAVITY = 300
+    was_colliding = False
 
-    def on_start(self):
-        Clock.schedule_interval(self.root.ids.background.scroll_textures, 1/60.)
+    #def on_start(self):
+    #    Clock.schedule_interval(self.root.ids.background.scroll_textures, 1/60.)
 
     def move_bird(self, time_passed):
         bird = self.root.ids.bird
         bird.y = bird.y + bird.velocity * time_passed
         bird.velocity = bird.velocity - self.GRAVITY * time_passed
+        self.check_collision()
+
+    def check_collision(self):
+        bird = self.root.ids.bird
+        # Go through each pipe and check if it collides
+        is_colliding = False
+        for pipe in self.pipes:
+            if pipe.collide_widget(bird):
+                is_colliding = True
+                # Check if bird is between the gap
+                if bird.y < (pipe.pipe_center - pipe.GAP_SIZE/2.0):
+                    self.game_over()
+                if bird.top > (pipe.pipe_center + pipe.GAP_SIZE/2.0):
+                    self.game_over()
+        if bird.y < 96:
+            self.game_over()
+        if bird.top > Window.height:
+            self.game_over()
+
+        if self.was_colliding and not is_colliding:
+            self.root.ids.score.text = str(int(self.root.ids.score.text)+1)
+        self.was_colliding = is_colliding
+
+    def game_over(self):
+        self.root.ids.bird.pos = (20, (self.root.height - 96) / 2.0)
+        for pipe in self.pipes:
+            self.root.remove_widget(pipe)
+        self.frames.cancel()
+        self.root.ids.start_button.disabled = False
+        self.root.ids.start_button.opacity = 1
+
+
+    def next_frame(self, time_passed):
+        self.move_bird(time_passed)
+        self.move_pipes(time_passed)
+        self.root.ids.background.scroll_textures(time_passed)
 
     def start_game(self):
-        Clock.schedule_interval(self.move_bird, 1/60.)
+        self.root.ids.score.text = "0"
+        self.was_colliding = False
+        self.pipes = []
+        #Clock.schedule_interval(self.move_bird, 1/60.)
+        self.frames = Clock.schedule_interval(self.next_frame, 1/60.)
 
         # Create the pipes
         num_pipes = 5
@@ -85,7 +126,7 @@ class MainApp(App):
             self.root.add_widget(pipe)
 
         # Move the pipes
-        Clock.schedule_interval(self.move_pipes, 1/60.)
+        #Clock.schedule_interval(self.move_pipes, 1/60.)
 
     def move_pipes(self, time_passed):
         # Move pipes
